@@ -9,6 +9,7 @@ import soundfile as sf
 import librosa
 import asyncio
 import logging
+import difflib
 
 app = FastAPI()
 
@@ -39,6 +40,16 @@ PREDEFINED_RESPONSES = {
     "can i speak to a human": "Sure, let me transfer you to a human agent."
 }
 
+def find_predefined_response(normalized_text):
+    for key, value in PREDEFINED_RESPONSES.items():
+        if key in normalized_text:
+            return value
+        similarity = difflib.SequenceMatcher(None, key, normalized_text).ratio()
+        if similarity > 0.8:
+            logger.info(f"Matching '{normalized_text}' to predefined key '{key}' with similarity {similarity:.2f}")
+            return value
+    return None
+
 def generate_response(prompt, context):
     system_prompt = (
         "You are a helpful customer service assistant. "
@@ -62,10 +73,6 @@ def generate_response(prompt, context):
         response = decoded_text[len(full_prompt):].strip()  # fallback
     logger.info(f"Generated response: {response}")
     return response
-
-
-
-
 
 def process_audio_to_text(audio_bytes):
     audio_file = io.BytesIO(audio_bytes)
@@ -122,16 +129,10 @@ async def call_endpoint(websocket: WebSocket, call_id: str):
                 normalized = text.lower().strip()
                 context = "\n".join(calls_context[call_id]["history"][-2:])
 
-
                 if normalized in context.lower():
                     response_text = "I'm sorry, we have already discussed that. Would you like help with something else?"
                 else:
-                    response_text = None
-                    for key, value in PREDEFINED_RESPONSES.items():
-                        if key in normalized:
-                            response_text = value
-                            logger.info(f"[{call_id}] Respuesta predefinida aplicada: {response_text}")
-                            break
+                    response_text = find_predefined_response(normalized)
 
                     if not response_text:
                         response_text = generate_response(text, context)
@@ -160,3 +161,4 @@ async def call_endpoint(websocket: WebSocket, call_id: str):
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000, ws_max_size=10485760)
+
