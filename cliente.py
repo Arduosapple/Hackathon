@@ -1,3 +1,26 @@
+"""
+Cliente WebSocket para grabar audio, enviar al servidor y reproducir respuestas
+
+Librerías necesarias (instalar con pip):
+
+- websockets      # Cliente WebSocket para comunicación con el servidor
+- sounddevice    # Captura y reproducción de audio desde micrófono y altavoces
+- soundfile      # Lectura/escritura de archivos de audio WAV
+- numpy          # Procesamiento de datos numéricos
+- asyncio        # Librería estándar de Python para programación asíncrona
+
+Instalación recomendada (en consola):
+
+    pip install websockets sounddevice soundfile numpy
+
+Nota:
+
+- sounddevice requiere que tu sistema tenga configurado correctamente los controladores de audio.
+- En Windows, es posible que necesites instalar Microsoft Visual C++ Redistributable para que sounddevice funcione bien.
+- asyncio viene con Python, no es necesario instalarlo.
+
+"""
+
 import asyncio
 import websockets
 import sounddevice as sd

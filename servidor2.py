@@ -1,3 +1,29 @@
+"""
+Servidor FastAPI para sistema de atención telefónica con IA
+
+Librerías necesarias (instalar con pip):
+
+- fastapi                 # Framework web para API
+- uvicorn[standard]       # Servidor ASGI para correr FastAPI
+- openai-whisper          # Modelo Whisper para reconocimiento de voz (STT)
+- TTS                     # Coqui TTS para síntesis de voz (TTS)
+- transformers            # Modelos de lenguaje como LLaMA
+- torch                   # PyTorch, backend para transformers
+- soundfile               # Lectura/escritura de archivos de audio WAV
+- librosa                 # Procesamiento y resampleo de audio
+- numpy                   # Cálculos numéricos
+
+Instalación recomendada (en consola):
+
+    pip install fastapi "uvicorn[standard]" openai-whisper TTS transformers soundfile librosa numpy
+
+Para instalar PyTorch, visitar:
+
+    https://pytorch.org/get-started/locally/
+
+y elegir la versión adecuada para tu sistema (CPU/GPU).
+"""
+
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 import whisper
 from TTS.api import TTS
